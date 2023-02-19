@@ -1,20 +1,118 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const employeeRouter = require('./routes/EmployeeRoutes.js');
+var express = require('express');
+var { graphqlHTTP } = require('express-graphql');
+var { buildSchema } = require('graphql');
 
-const app = express();
-app.use(express.json()); // Make sure it comes back as json
+// GraphQL schema
+var schema = buildSchema(`
+    type Query {
+        course(id: Int!): Course
+        courses(topic: String): [Course]
+    },
+    type Mutation {
+        updateCourseTopic(id: Int!, topic: String!): Course
+    },
+    type Course {
+        id: Int
+        title: String
+        author: String
+        description: String
+        topic: String
+        url: String
+    }
+`);
 
-//TODO - Replace you Connection String here
-mongoose.connect('PASTE_YOUR_CONNECTION_STRING_HERE', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(success => {
-  console.log('Success Mongodb connection')
-}).catch(err => {
-  console.log('Error Mongodb connection')
-});
+var coursesData = [
+    {
+        id: 1,
+        title: 'The Complete Node.js Developer Course',
+        author: 'Andrew Mead, Rob Percival',
+        description: 'Learn Node.js by building real-world applications with Node, Express, MongoDB, Mocha, and more!',
+        topic: 'Node.js',
+        url: 'https://codingthesmartway.com/courses/nodejs/'
+    },
+    {
+        id: 2,
+        title: 'Node.js, Express & MongoDB Dev to Deployment',
+        author: 'Brad Traversy',
+        description: 'Learn by example building & deploying real-world Node.js applications from absolute scratch',
+        topic: 'Node.js',
+        url: 'https://codingthesmartway.com/courses/nodejs-express-mongodb/'
+    },
+    {
+        id: 3,
+        title: 'JavaScript: Understanding The Weird Parts',
+        author: 'Anthony Alicea',
+        description: 'An advanced JavaScript course for everyone! Scope, closures, prototypes, this, build your own framework, and more.',
+        topic: 'JavaScript',
+        url: 'https://codingthesmartway.com/courses/understand-javascript/'
+    }
+]
 
-app.use(employeeRouter);
+var getCourse = (args) => { 
+    var id = args.id;
+    return coursesData.filter(course => {
+        return course.id == id;
+    })[0];
+}
 
-app.listen(8081, () => { console.log('Server is running...') });
+var getCourses = (args) => {
+    if (args.topic) {
+        var topic = args.topic;
+        return coursesData.filter(course => course.topic === topic);
+    } else {
+        return coursesData;
+    }
+}
+
+//var updateCourseTopic = (args) => {
+var updateCourseTopic = ({id, topic}) => {
+    //var {id, topic} = args
+    coursesData.map(course => {
+        if (course.id === id) { //args.id
+            course.topic = topic; //args.topic
+            return course;
+        }
+    });
+    return coursesData.filter(course => course.id === id) [0];
+}
+
+//Declare Resolver
+var root = {
+    course: getCourse,
+    courses: getCourses,
+    updateCourseTopic: updateCourseTopic
+};
+
+// Create an express server and a GraphQL endpoint
+var app = express();
+app.use('/graphql', graphqlHTTP({
+    schema: schema,
+    rootValue: root,
+    graphiql: true
+}));
+
+app.listen(4000, () => console.log('Express GraphQL Server Now Running On localhost:4000/graphql'));
+
+
+// const mongoose = require('mongoose');
+// const employeeRouter = require('./routes/EmployeeRoutes.js');
+
+// const app = express();
+// app.use(express.json()); // Make sure it comes back as json
+
+// const PORT = 3000
+
+// //TODO - Replace you Connection String here
+// mongoose.set('strictQuery', true)
+// mongoose.connect('mongodb+srv://sa:TXEt5Ngiu7WVcU9P@cluster0.r8uhczt.mongodb.net/comp3133_assigment1?retryWrites=true&w=majority', {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true
+// }).then(success => {
+//   console.log('Success Mongodb connection')
+// }).catch(err => {
+//   console.log('Error Mongodb connection')
+// });
+
+// app.use(employeeRouter);
+
+// app.listen(PORT, () => { console.log(`Server is running on port ${PORT}...`) });

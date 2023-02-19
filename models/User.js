@@ -1,19 +1,13 @@
 const mongoose = require('mongoose');
 
-const EmployeeSchema = new mongoose.Schema({
-  first_name: {
-    type: String
-  },
-  last_name: {
+const UserSchema = new mongoose.Schema({
+  username: {
     type: String
   },
   email: {
     type: String
   },
-  gender: {
-    type: String
-  },
-  salary: {
+  password: {
     type: Number
   }
 });
