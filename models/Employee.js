@@ -1,6 +1,5 @@
 const path = require('path')
 const mongoose = require('mongoose');
-const fs = require('fs')
 
 const EmployeeSchema = new mongoose.Schema({
   firstname: {
@@ -16,7 +15,9 @@ const EmployeeSchema = new mongoose.Schema({
     type: String
   },
   gender: {
-    type: String
+    type: String,
+    enum: ['male', 'female', 'other']
+
   },
   salary: {
     type: Number
