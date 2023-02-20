@@ -7,12 +7,6 @@ const resolvers = {
         getAllUsers: async (root) =>{            
             const user = await User.find({})
             return user
-            // return new Promise((resolve,reject)=>{
-            //     User.find((err, data )=>{
-            //         if(err) reject(err);
-            //         else resolve(data);
-            //     })
-            // })
         },
         getAllEmployees: async (root)=>{
             const employee = await Employee.find({})
@@ -23,28 +17,10 @@ const resolvers = {
             const user = await User.find({username: username, password: password, email:email})
             console.log(user[0]);
             return user[0]
-            // return new Promise((resolve, reject) => {
-            //     User.find({username: username, password: password, email:email}, (err, data) => {
-            //         if (err) {
-            //             reject(err)
-            //         }
-            //         else {
-            //             resolve(data[0])
-            //         }
-            //     })
-            // })
     },
         searchEmployee: async (root, {_id})=>{
             const employee = await Employee.findById({_id: _id})
             return employee
-        //     return new Promise((resolve,reject)=>{
-        //         Employee.findById({_id: _id}, (err, data) => {
-        //             if (err) reject(err)
-        //             else {
-        //                 resolve(data)
-        //             }
-        //         })
-        // })
     }
 },
 
