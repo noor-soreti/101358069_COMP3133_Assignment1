@@ -1,7 +1,6 @@
 const { Employee } = require('../models/Employee')
 const { User } = require('../models/User')
 
-
 const resolvers = {
     Query:{
         getAllUsers: async (root) =>{            
@@ -25,7 +24,7 @@ const resolvers = {
 },
 
     Mutation: {
-        signup: async (root, {username, email, password} ) => {
+        signup: (root, {username, email, password} ) => {
             const newUser = new User({
                 username: username,
                 email: email,
@@ -67,7 +66,7 @@ const resolvers = {
             }
 
         },
-        createEmployee: async (root, {input}) => {
+        createEmployee: (root, {input}) => {
             const newEmpl = new Employee({
                 firstname: input.firstname,
                 lastname: input.lastname,
