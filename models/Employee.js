@@ -1,13 +1,18 @@
+const path = require('path')
 const mongoose = require('mongoose');
+const fs = require('fs')
 
 const EmployeeSchema = new mongoose.Schema({
-  first_name: {
+  firstname: {
     type: String
   },
-  last_name: {
+  lastname: {
     type: String
   },
   email: {
+    type: String
+  },
+  designation: {
     type: String
   },
   gender: {
@@ -17,20 +22,6 @@ const EmployeeSchema = new mongoose.Schema({
     type: Number
   }
 });
-
-//Declare Virtual Fields
-
-
-//Custom Schema Methods
-//1. Instance Method Declaration
-
-
-//2. Static method declararion
-
-
-//Writing Query Helpers
-
-
 
 EmployeeSchema.pre('save', (next) => {
   console.log("Before Save")
@@ -71,5 +62,5 @@ EmployeeSchema.post('remove', (doc) => {
   console.log('%s has been removed', doc._id);
 });
 
-const Employee = mongoose.model("Employee", EmployeeSchema);
-module.exports = Employee;
+var Employee = mongoose.model("Employee", EmployeeSchema);
+module.exports = {Employee, EmployeeSchema};

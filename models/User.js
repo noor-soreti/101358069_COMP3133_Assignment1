@@ -8,25 +8,11 @@ const UserSchema = new mongoose.Schema({
     type: String
   },
   password: {
-    type: Number
+    type: String
   }
 });
 
-//Declare Virtual Fields
-
-
-//Custom Schema Methods
-//1. Instance Method Declaration
-
-
-//2. Static method declararion
-
-
-//Writing Query Helpers
-
-
-
-EmployeeSchema.pre('save', (next) => {
+UserSchema.pre('save', (next) => {
   console.log("Before Save")
   let now = Date.now()
    
@@ -40,7 +26,7 @@ EmployeeSchema.pre('save', (next) => {
   next()
 });
 
-EmployeeSchema.pre('findOneAndUpdate', (next) => {
+UserSchema.pre('findOneAndUpdate', (next) => {
   console.log("Before findOneAndUpdate")
   let now = Date.now()
   this.updatedat = now
@@ -49,21 +35,21 @@ EmployeeSchema.pre('findOneAndUpdate', (next) => {
 });
 
 
-EmployeeSchema.post('init', (doc) => {
+UserSchema.post('init', (doc) => {
   console.log('%s has been initialized from the db', doc._id);
 });
 
-EmployeeSchema.post('validate', (doc) => {
+UserSchema.post('validate', (doc) => {
   console.log('%s has been validated (but not saved yet)', doc._id);
 });
 
-EmployeeSchema.post('save', (doc) => {
+UserSchema.post('save', (doc) => {
   console.log('%s has been saved', doc._id);
 });
 
-EmployeeSchema.post('remove', (doc) => {
+UserSchema.post('remove', (doc) => {
   console.log('%s has been removed', doc._id);
 });
 
-const Employee = mongoose.model("Employee", EmployeeSchema);
-module.exports = Employee;
+var User = mongoose.model("User", UserSchema);
+module.exports = { User };
